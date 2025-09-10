@@ -12,8 +12,8 @@ A simple real-time chat application built with **HTML, CSS, and JavaScript**.
 2. Open it in any web browser
 3. Start chatting instantly!
 
-## Live Demo 🌐
-*[Live link will be added after deployment]*
+## 🌐 Live Demo  
+[Click here to chat now!](https://darling-kitten-bfb6b3.netlify.app)
 
 ## License 📄
 MIT License - feel free to use this code!
