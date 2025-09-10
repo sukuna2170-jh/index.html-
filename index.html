@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Hello Chat - दुनिया भर के लोगों से कनेक्ट करें, ग्रुप चैट, गेम्स और Tillu AI के साथ">
+    <title>Hello Chat - दुनिया भर के लोगों से कनेक्ट करें</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6a11cb;
+            --secondary-color: #2575fc;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            margin-bottom: 30px;
+            animation: fadeInDown 1s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, #fff, #e1e1e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-icon {
+            font-size: 2.8rem;
+            color: #fff;
+            animation: pulse 2s infinite;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+
+        nav a {
+            color: var(--light-color);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Auth Buttons */
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--light-color);
+            color: var(--light-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-color);
+            color: var(--primary-color);
+            transform: translateY(-3px);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 50px 0;
+            animation: fadeInUp 1s ease;
+        }
+
+        .hero h2 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.9;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            display: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            overflow: hidden;
+            height: 70vh;
+            margin-top: 30px;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .chat-header {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            padding: 20px;
+            height: calc(100% - 150px);
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+
+        .message-content {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 70%;
+            align-self: flex-start;
+        }
+
+        .message.my-message .message-content {
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--dark-color);
+            align-self: flex-end;
+        }
+
+        .chat-input {
+            padding: 15px 20px;
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .chat-input button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            background: var(--secondary-color);
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 50px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 10px auto;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #fff;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="notification" id="notification"></div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-comments logo-icon"></i>
+                <h1>Hello Chat</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Groups</a></li>
+                    <li><a href="#">Games</a></li>
+                    <li><a href="#">Tillu AI</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button class="btn btn-outline" id="guestLogin">Guest Login</button>
+                <button class="btn btn-primary" id="signUp">Sign Up</button>
+            </div>
+        </header>
+
+        <section class="hero">
+            <h2>Connect with People Around the World</h2>
+            <p>Hello Chat is a revolutionary platform where you can meet new people, join groups, play games, and chat with our intelligent AI assistant Tillu - all while maintaining your privacy.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="startChatting">Start Chatting Now</button>
+                <button class="btn btn-outline" id="learnMore">Learn More</button>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <i class="fas fa-random feature-icon"></i>
+                <h3>Random Chat</h3>
+                <p>Connect with random people from around the world with similar interests.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-robot feature-icon"></i>
+                <h3>Tillu AI Assistant</h3>
+                <p>Chat with our intelligent AI that behaves like a human and can assist you.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-gamepad feature-icon"></i>
+                <h3>Group Games</h3>
+                <p>Play fun games with your friends and other community members.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-globe feature-icon"></i>
+                <h3>Multi-Language</h3>
+                <p>Chat in any language with our built-in translation system.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-shield-alt feature-icon"></i>
+                <h3>Privacy Focused</h3>
+                <p>No ads, no tracking, and complete control over your data.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-mobile-alt feature-icon"></i>
+                <h3>Responsive Design</h3>
+                <p>Works perfectly on all devices - desktop, tablet, and mobile.</p>
+            </div>
+        </section>
+
+        <div class="chat-container" id="chatInterface">
+            <div class="chat-header">
+                <h3>Global Chat Room</h3>
+                <div>
+                    <span>Online: <span id="onlineCount">247</span></span>
+                    <button class="btn btn-outline" style="margin-left: 15px;" id="leaveChat">Leave Chat</button>
+                </div>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message">
+                    <span class="message-sender">Tillu AI</span>
+                    <div class="message-content">Welcome to Hello Chat! How can I assist you today?</div>
+                </div>
+                <div class="message">
+                    <span class="message-sender">Sarah</span>
+                    <div class="message-content">Hey everyone! How's it going?</div>
+                </div>
+                <div class="message my-message">
+                    <span class="message-sender">You</span>
+                    <div class="message-content">I'm doing great! Just joined this awesome chat platform.</div>
+                </div>
+                <div class="message">
+                    <span class="message-sender">John</span>
+                    <div class="message-content">Anyone up for a game later?</div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="Type your message here...">
+                <button id="sendMessage">Send</button>
+            </div>
+            <div class="spinner" id="typingSpinner"></div>
+        </div>
+
+        <footer>
+            <p>© 2023 Hello Chat. All rights reserved.</p>
+            <p>Privacy Policy | Terms of Service | Contact Us</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startChattingBtn = document.getElementById('startChatting');
+            const guestLoginBtn = document.getElementById('guestLogin');
+            const chatInterface = document.getElementById('chatInterface');
+            const chatMessages = document.getElementById('chatMessages');
+            const messageInput = document.getElementById('messageInput');
+            const sendMessageBtn = document.getElementById('sendMessage');
+            const leaveChatBtn = document.getElementById('leaveChat');
+            const onlineCount = document.getElementById('onlineCount');
+            const typingSpinner = document.getElementById('typingSpinner');
+            const notification = document.getElementById('notification');
+            
+            // User names for simulation
+            const userNames = ['Sarah', 'John', 'Mike', 'Emma', 'Alex', 'Priya', 'David', 'Lisa', 'Carlos', 'Sophia'];
+            
+            // Language detection patterns
+            const languagePatterns = {
+                'english': /^[a-zA-Z\s.,!?']+$/,
+                'hindi': /[\u0900-\u097F]/,
+                'spanish': /[áéíóúñüÁÉÍÓÚÑÜ]/,
+                'french': /[àâçéèêëîïôûùüÿñÀÂÇÉÈÊËÎÏÔÛÙÜŸÑ]/,
+                'german': /[äöüßÄÖÜ]/,
+                'japanese': /[\u3040-\u30FF]/,
+                'korean': /[\uAC00-\uD7AF]/,
+                'chinese': /[\u4E00-\u9FFF]/,
+                'arabic': /[\u0600-\u06FF]/,
+                'russian': /[\u0400-\u04FF]/
+            };
+            
+            // Show notification function
+            function showNotification(message, isSuccess = true) {
+                notification.textContent = message;
+                notification.style.background = isSuccess ? var(--success-color) : var(--danger-color);
+                notification.style.display = 'block';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Detect language of a message
+            function detectLanguage(text) {
+                for (const [lang, pattern] of Object.entries(languagePatterns)) {
+                    if (pattern.test(text)) {
+                        return lang;
+                    }
+                }
+                return 'english'; // default to English
+            }
+            
+            // Tillu AI responses in different languages
+            const tilluResponses = {
+                'english': [
+                    "Interesting! Tell me more.",
+                    "I see what you mean.",
+                    "How's your day going?",
+                    "I'm here if you need anything!",
+                    "What do you like to do for fun?",
+                    "That's cool!",
+                    "I understand.",
+                    "Nice to chat with you!",
+                    "What's on your mind?",
+                    "Got any plans for today?"
+                ],
+                'hindi': [
+                    "दिलचस्प! और बताओ।",
+                    "समझ गया।",
+                    "तुम्हारा दिन कैसा चल रहा है?",
+                    "अगर कुछ चाहिए तो मैं यहाँ हूँ!",
+                    "मजे के लिए तुम क्या करते हो?",
+                    "यह तो अच्छा है!",
+                    "मैं समझ गया।",
+                    "तुमसे बात करके अच्छा लगा!",
+                    "क्या चल रहा है?",
+                    "आज के लिए कोई plans हैं?"
+                ],
+                'spanish': [
+                    "¡Interesante! Cuéntame más.",
+                    "Ya veo lo que dices.",
+                    "¿Cómo va tu día?",
+                    "¡Estoy aquí si necesitas algo!",
+                    "¿Qué te gusta hacer para divertirte?",
+                    "¡Eso es genial!",
+                    "Entiendo.",
+                    "¡Gusto de charlar contigo!",
+                    "¿En qué estás pensando?",
+                    "¿Tienes planes para hoy?"
+                ]
+            };
+            
+            // Simulate chat functionality
+            startChattingBtn.addEventListener('click', function() {
+                chatInterface.style.display = 'block';
+                startChattingBtn.textContent = 'Chatting...';
+                showNotification('Chat started successfully!');
+                
+                // Scroll to chat
+                chatInterface.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            guestLoginBtn.addEventListener('click', function() {
+                showNotification('Guest login successful! Enjoy chatting.');
+                chatInterface.style.display = 'block';
+                
+                // Scroll to chat
+                chatInterface.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Leave chat functionality
+            leaveChatBtn.addEventListener('click', function() {
+                chatInterface.style.display = 'none';
+                startChattingBtn.textContent = 'Start Chatting Now';
+                showNotification('You have left the chat.');
+            });
+            
+            // Send message functionality
+            function sendMessage() {
+                if (messageInput.value.trim() !== '') {
+                    addMessage('You', messageInput.value, true);
+                    simulateReply(messageInput.value);
+                    messageInput.value = '';
+                }
+            }
+            
+            sendMessageBtn.addEventListener('click', sendMessage);
+            
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            function addMessage(sender, content, isMyMessage = false) {
+                const messageDi
