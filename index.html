@@ -473,6 +473,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const startChattingBtn = document.getElementById('startChatting');
             const guestLoginBtn = document.getElementById('guestLogin');
+            const signUpBtn = document.getElementById('signUp');
+            const learnMoreBtn = document.getElementById('learnMore');
             const chatInterface = document.getElementById('chatInterface');
             const chatMessages = document.getElementById('chatMessages');
             const messageInput = document.getElementById('messageInput');
@@ -485,24 +487,10 @@
             // User names for simulation
             const userNames = ['Sarah', 'John', 'Mike', 'Emma', 'Alex', 'Priya', 'David', 'Lisa', 'Carlos', 'Sophia'];
             
-            // Language detection patterns
-            const languagePatterns = {
-                'english': /^[a-zA-Z\s.,!?']+$/,
-                'hindi': /[\u0900-\u097F]/,
-                'spanish': /[áéíóúñüÁÉÍÓÚÑÜ]/,
-                'french': /[àâçéèêëîïôûùüÿñÀÂÇÉÈÊËÎÏÔÛÙÜŸÑ]/,
-                'german': /[äöüßÄÖÜ]/,
-                'japanese': /[\u3040-\u30FF]/,
-                'korean': /[\uAC00-\uD7AF]/,
-                'chinese': /[\u4E00-\u9FFF]/,
-                'arabic': /[\u0600-\u06FF]/,
-                'russian': /[\u0400-\u04FF]/
-            };
-            
             // Show notification function
             function showNotification(message, isSuccess = true) {
                 notification.textContent = message;
-                notification.style.background = isSuccess ? var(--success-color) : var(--danger-color);
+                notification.style.background = isSuccess ? 'var(--success-color)' : 'var(--danger-color)';
                 notification.style.display = 'block';
                 
                 setTimeout(() => {
@@ -510,57 +498,67 @@
                 }, 3000);
             }
             
-            // Detect language of a message
-            function detectLanguage(text) {
-                for (const [lang, pattern] of Object.entries(languagePatterns)) {
-                    if (pattern.test(text)) {
-                        return lang;
-                    }
-                }
-                return 'english'; // default to English
+            // Add message to chat
+            function addMessage(sender, content, isMyMessage = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isMyMessage ? 'my-message' : ''}`;
+                
+                const senderSpan = document.createElement('span');
+                senderSpan.className = 'message-sender';
+                senderSpan.textContent = sender;
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                contentDiv.textContent = content;
+                
+                messageDiv.appendChild(senderSpan);
+                messageDiv.appendChild(contentDiv);
+                
+                chatMessages.appendChild(messageDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
             }
             
-            // Tillu AI responses in different languages
-            const tilluResponses = {
-                'english': [
-                    "Interesting! Tell me more.",
-                    "I see what you mean.",
-                    "How's your day going?",
-                    "I'm here if you need anything!",
-                    "What do you like to do for fun?",
-                    "That's cool!",
-                    "I understand.",
-                    "Nice to chat with you!",
-                    "What's on your mind?",
-                    "Got any plans for today?"
-                ],
-                'hindi': [
-                    "दिलचस्प! और बताओ।",
-                    "समझ गया।",
-                    "तुम्हारा दिन कैसा चल रहा है?",
-                    "अगर कुछ चाहिए तो मैं यहाँ हूँ!",
-                    "मजे के लिए तुम क्या करते हो?",
-                    "यह तो अच्छा है!",
-                    "मैं समझ गया।",
-                    "तुमसे बात करके अच्छा लगा!",
-                    "क्या चल रहा है?",
-                    "आज के लिए कोई plans हैं?"
-                ],
-                'spanish': [
-                    "¡Interesante! Cuéntame más.",
-                    "Ya veo lo que dices.",
-                    "¿Cómo va tu día?",
-                    "¡Estoy aquí si necesitas algo!",
-                    "¿Qué te gusta hacer para divertirte?",
-                    "¡Eso es genial!",
-                    "Entiendo.",
-                    "¡Gusto de charlar contigo!",
-                    "¿En qué estás pensando?",
-                    "¿Tienes planes para hoy?"
-                ]
-            };
+            // Simulate AI response
+            function simulateReply(userMessage) {
+                typingSpinner.style.display = 'block';
+                
+                setTimeout(() => {
+                    typingSpinner.style.display = 'none';
+                    
+                    // Simulate random user or AI response
+                    if (Math.random() > 0.5) {
+                        const randomUser = userNames[Math.floor(Math.random() * userNames.length)];
+                        const responses = [
+                            "That's interesting!",
+                            "Tell me more about that.",
+                            "I agree with you.",
+                            "Nice to meet you!",
+                            "How's your day going?",
+                            "What do you like to do for fun?",
+                            "Have you been here before?",
+                            "What brings you here today?"
+                        ];
+                        
+                        addMessage(randomUser, responses[Math.floor(Math.random() * responses.length)]);
+                    } else {
+                        // AI response
+                        const aiResponses = [
+                            "I understand what you're saying.",
+                            "That's an interesting perspective!",
+                            "How can I help you today?",
+                            "I'm here to assist with anything you need.",
+                            "Would you like to know more about our features?",
+                            "I'm learning from our conversation. Thank you!",
+                            "That's great to hear!",
+                            "I appreciate you sharing that with me."
+                        ];
+                        
+                        addMessage("Tillu AI", aiResponses[Math.floor(Math.random() * aiResponses.length)]);
+                    }
+                }, 1500);
+            }
             
-            // Simulate chat functionality
+            // Event listeners
             startChattingBtn.addEventListener('click', function() {
                 chatInterface.style.display = 'block';
                 startChattingBtn.textContent = 'Chatting...';
@@ -576,6 +574,15 @@
                 
                 // Scroll to chat
                 chatInterface.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            signUpBtn.addEventListener('click', function() {
+                showNotification('Sign up feature coming soon!', false);
+            });
+            
+            learnMoreBtn.addEventListener('click', function() {
+                showNotification('Learn more about our features!');
+                document.querySelector('.features').scrollIntoView({ behavior: 'smooth' });
             });
             
             // Leave chat functionality
@@ -602,5 +609,14 @@
                 }
             });
             
-            function addMessage(sender, content, isMyMessage = false) {
-                const messageDi
+            // Simulate online users count change
+            setInterval(() => {
+                const change = Math.floor(Math.random() * 5) - 2;
+                const currentCount = parseInt(onlineCount.textContent);
+                const newCount = Math.max(10, currentCount + change);
+                onlineCount.textContent = newCount;
+            }, 10000);
+        });
+    </script>
+</body>
+</html>
